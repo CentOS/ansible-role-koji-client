@@ -8,3 +8,61 @@
   tags:
     - vars
 
+- name: Add the koji repo if needed
+  template:
+    src: koji.repo.j2
+    dest: /etc/yum.repos.d/koji.repo
+    mode: 0644
+  when: koji_repo
+  tags:
+    - repo
+
+- name: Adding repo gpg key if needed
+  copy:
+    src: "files/{{ koji_repo_gpgkey }}"
+    dest: "/etc/pki/rpm-gpg/{{ koji_repo_gpgkey }}"
+  when: 
+    - koji_repo 
+  tags:
+    - repo
+
+- name: Installing koji client
+  yum:
+    name: "{{ koji_cli_pkgs }}"
+    state: latest
+
+- name: Creating local koji admin user if needed
+  user:
+    name: "{{ koji_user }}"
+    comment: "Local koji admin"
+
+- name: Creating dir for koji config
+  file:
+    path: "/home/{{ koji_user}}/.koji"
+    state: directory
+    owner: "{{ koji_user }}"
+
+- name: Configuring koji client for admin
+  template:
+    src: koji-client-config.j2
+    dest: "/home/{{ koji_user}}/.koji/config"
+    owner: "{{ koji_user }}"
+    
+- name: Copy TLS pem files for koji admin user
+  copy:
+    src: "{{ pkistore }}/koji/{{ koji_pem }}"
+    dest: "/etc/pki/koji/{{ koji_pem }}"
+    owner: "{{ koji_user }}"
+    mode: 0644
+  when: koji_auth_tls
+
+- name: Copy keytab for koji admin user
+  copy: 
+    src: "{{ pkistore }}/koji/{{ koji_keytab }}"
+    dest: "/home/{{ koji_user }}/{{ koji_keytab }}"
+    owner: "{{ koji_user }}"
+    mode: 0644
+  when: koji_auth_kerberos
+  
+
+

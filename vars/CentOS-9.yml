@@ -1,0 +1,4 @@
+koji_cli_pkgs:
+  - koji
+  - python3-koji-cli-plugins
+  - krb5-workstation

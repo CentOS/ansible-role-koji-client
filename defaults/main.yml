@@ -1,1 +1,23 @@
 # Defaults variables for role koji-client
+
+# Do we need a repository to fetch koji from ?
+koji_repo: True
+koji_repo_gpgcheck: True
+koji_repo_gpgkey: RPM-GPG-KEY-CentOS-Infra
+
+# Defining which kojihub to interact with
+koji_hub_url: https://koji.centos.org/kojihub
+koji_web_url: https://koji.centos.org/koji
+koji_files_url: https://koji.centos.org/kojifiles
+
+# how to interact with kojihub (kerberos vs tls auth)
+# In case of TLS auth it needs a .pem file and in case of kerberos auth, a keytab
+# Just set one to True and other to False (depending on ENV)
+koji_auth_tls: True
+koji_user: admin
+koji_pem: admin.pem
+# If using kerberos
+koji_auth_kerberos: False
+koji_principal: koji-admin@DEV.CENTOS.ORG
+koji_keytab: koji-admin.keytab # Needed only if koji_auth_kerberos above and vice/versa with TLS
+
