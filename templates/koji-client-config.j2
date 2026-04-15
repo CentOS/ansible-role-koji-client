@@ -8,7 +8,7 @@ weburl = {{ koji_web_url }}
 topurl = {{ koji_files_url }}
 
 ;path to the koji top directory
-topdir = /mnt/koji
+topdir = {{ koji_topdir }}
 
 {% if koji_auth_tls %}
 ;forcing x509 auth (default to kerberos on 1.11)
